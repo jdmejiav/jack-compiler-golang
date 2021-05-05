@@ -2,26 +2,23 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 )
 
 func main() {
-	argsWithProg := os.Args
 
-	if len(argsWithProg) != 1 {
-		fmt.Println(argsWithProg[1])
-		file, err := ioutil.ReadFile(argsWithProg[1])
-		if err == nil {
-
-			exp := string(file)
-
-		} else {
-			panic(err)
-		}
-	} else {
-		fmt.Println("You must pass the route of the file .jack as argument")
-		return
+	file, err := os.Open("hola")
+	if err != nil {
+		panic(err)
 	}
 
+	lexer := NewLexer(file)
+	for {
+		pos, tok, lit := lexer.Lex()
+		if tok == EOF {
+			break
+		}
+
+		fmt.Printf("%d:%d\t%s\t%s\n", pos.line, pos.column, tok, lit)
+	}
 }
