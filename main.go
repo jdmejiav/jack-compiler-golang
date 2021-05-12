@@ -6,19 +6,22 @@ import (
 )
 
 func main() {
-
-	file, err := os.Open("hola")
-	if err != nil {
-		panic(err)
-	}
-
-	lexer := NewLexer(file)
-	for {
-		pos, tok, lit := lexer.Lex()
-		if tok == EOF {
-			break
+	files := os.Args[1:]
+	for _, i := range files {
+		file, err := os.Open(i)
+		if err != nil {
+			panic(err)
 		}
+		var tokens []Token = []Token{}
 
-		fmt.Printf("%d:%d\t%s\t%s\n", pos.line, pos.column, tok, lit)
+		lexer := NewLexer(file)
+		for {
+			tokenTemp := lexer.tokenize()
+			if tokenTemp.tokenType == EOF {
+				break
+			}
+			tokens = append(tokens, *tokenTemp)
+			fmt.Printf("<%v> %s </%v>\n", tokenTemp.tokenType, tokenTemp.token, tokenTemp.tokenType)
+		}
 	}
 }

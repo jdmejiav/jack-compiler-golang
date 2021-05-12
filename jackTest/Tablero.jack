@@ -1,0 +1,284 @@
+class Tablero {
+    // attributes and methods
+    field Barra barra1;
+    field Barra barra2;
+    field Bola bola;
+    field Player jugador1;
+    field Player jugador2;
+    field Numeros marcadorJugador1;
+    field Numeros marcadorJugador2;
+
+
+    field int incrementado;
+
+
+
+    constructor Tablero new(){
+        let barra1 = Barra.new(10,100,20,160);
+        let barra2 = Barra.new(492,100,502,160);
+        let bola = Bola.new();
+        let jugador1= Player.new();
+        let jugador2= Player.new();
+        let marcadorJugador1 = Numeros.new(275,50);
+        let marcadorJugador2 = Numeros.new(215,50); 
+        let incrementado=0;
+        return this;
+    }
+
+    method Barra getBarra1(){
+        return barra1;
+    }
+
+    method Barra getBarra2(){
+        return barra2;
+    }
+
+    method Bola getBola(){
+        return bola;
+    }
+
+    method void setBola(Bola bolaa){
+        let bola = bolaa;
+        return;
+    }
+    method void drawTablero(){
+        do barra1.drawBarra();                              //barra1
+        do barra2.drawBarra();                              //barra2 
+        do bola.drawBola();                                 //División
+        do Screen.drawRectangle(254,0,256,255);             //Bola
+
+
+
+
+        do marcadorJugador1.drawNumber(jugador1.getMarcador());
+        do marcadorJugador2.drawNumber(jugador2.getMarcador());
+        return;
+    }
+
+    method void moveBola(){
+
+        var int temp;
+        
+        do bola.clearBola();
+        do duplicarBola();
+
+        if (bola.getPosy()-bola.getRadio()<10){
+            if (bola.getDireccion() = 0){         //derecha Subiendo
+                do bola.setDireccion(1);        //derecha Bajando
+            }
+            if (bola.getDireccion() = 2){         //izquierda Dubiendo
+                do bola.setDireccion(3);        //izquierda bajando
+            }
+        }
+
+        if (bola.getPosy()+bola.getRadio()>250){
+            if (bola.getDireccion() = 1){         //derecha bajando
+                do bola.setDireccion(0);      //derecha subiendo
+            }
+            if(bola.getDireccion() = 3){          //izquierda bajando
+                do bola.setDireccion(2);        //izquierda subiendo
+            }
+
+        }
+
+
+        if (bola.getPosx()-bola.getRadio() < 10){
+            do bola.setPosx(255);
+            do bola.setPosy(127);
+            do jugador1.incrementarMarcador();
+        }
+        
+        if (bola.getPosx()+bola.getRadio() > 500){
+            do bola.setPosx(255);
+            do bola.setPosy(127);
+            do jugador2.incrementarMarcador();
+        }
+
+
+
+
+
+
+
+
+        if (bola.getPosx()-bola.getRadio() < 15){
+            if (barra1.getPosy() < bola.getPosy()){
+                if (barra1.getPosy2() > bola.getPosy()){
+                    
+                    if (barra1.getPosy()+((barra1.getPosy2()-barra1.getPosy())/2) > bola.getPosy()){
+                        do bola.setDireccion(0);
+                        let temp = barra1.getPosy2();
+                        let temp= temp+1;
+                        do barra1.setPosy2(temp);
+                    }else{
+                        if (barra1.getPosy()+((barra1.getPosy2()-barra1.getPosy())/2) < bola.getPosy()){
+
+                            do bola.setDireccion(1);
+                            let temp = barra1.getPosy2();
+                            let temp= temp+1;
+                            do barra1.setPosy2(temp);
+
+                        }
+                    }
+
+                    if (barra1.getPosy()+((barra1.getPosy2()-barra1.getPosy())/2)-5 <  bola.getPosy() ){
+                        if (barra1.getPosy()+((barra1.getPosy2()-barra1.getPosy())/2)+5 >  bola.getPosy() ){
+                            do bola.setDireccion(4);
+                            let temp = barra1.getPosy2();
+                            let temp= temp+1;
+                            do barra1.setPosy2(temp);
+                        }
+                    }
+                    
+                    
+                    /*
+                    if (bola.getDireccion() = 2){
+                        do bola.setDireccion(0);
+                    }
+                    if (bola.getDireccion() = 3){
+                        do bola.setDireccion(1);
+                    }
+                    */
+                }
+            }
+
+        }
+
+        if (bola.getPosx()+bola.getRadio()> 497){
+            
+            if (barra2.getPosy() < bola.getPosy()){
+                
+                if (barra2.getPosy2() > bola.getPosy()){
+                    
+                    if (barra2.getPosy()+(barra2.getPosy2()-barra2.getPosy())/2 > bola.getPosy()){
+
+
+                        
+                        do bola.setDireccion(2);
+
+                        let temp = barra2.getPosy2();
+                        let temp= temp+1;
+                        do barra2.setPosy2(temp);
+
+                    }else{
+                        if (barra2.getPosy()+(barra2.getPosy2()-barra2.getPosy())/2 < bola.getPosy()){
+                            do bola.setDireccion(3);
+                            let temp = barra2.getPosy2();
+                            let temp= temp+1;
+                            do barra2.setPosy2(temp);
+                        }
+                    if (barra2.getPosy()+((barra2.getPosy2()-barra2.getPosy())/2)-5<  bola.getPosy() ){
+                        if (barra2.getPosy()+((barra2.getPosy2()-barra2.getPosy())/2)+5 >  bola.getPosy() ){
+                            
+                            let temp = barra2.getPosy2();
+                            let temp= temp+1;
+                            do barra2.setPosy2(temp);
+                            do bola.setDireccion(5);
+                        }
+                    }
+
+                    }
+                    
+                    
+                    /*
+                    if (bola.getDireccion() = 0){
+                        do bola.setDireccion(2);
+                    }
+                    if (bola.getDireccion() = 1){
+                        do bola.setDireccion(3);
+                    }*/
+                }
+            }
+
+        }
+
+        if (bola.getDireccion()=0){ //derecha subiendo 
+            do bola.setPosx(bola.getPosx()+5);
+            do bola.setPosy(bola.getPosy()-5);
+        }
+        if (bola.getDireccion()=1){ //derecha bajando 
+            do bola.setPosx(bola.getPosx()+5);
+            do bola.setPosy(bola.getPosy()+5);
+        }
+        if (bola.getDireccion() = 2){ //izquierda subiendo 
+            do bola.setPosx(bola.getPosx()-5);
+            do bola.setPosy(bola.getPosy()-5);
+        }
+        if (bola.getDireccion()=3){ //izquierda bajando 
+            do bola.setPosx(bola.getPosx()-5);
+            do bola.setPosy(bola.getPosy()+5);
+        }
+
+
+
+        if (bola.getDireccion()=4){ //Ángulo recto derecha
+            do bola.setPosx(bola.getPosx()+5);
+        }
+        if (bola.getDireccion()=5){ //Ángulo recto izquierda
+            do bola.setPosx(bola.getPosx()-5);
+        }
+
+
+        do bola.drawBola();
+        return;
+
+
+    }    
+
+    method void dispose(){
+        do Memory.deAlloc(this);
+        return;
+    }
+
+
+    method void resetBarra(){
+        var int temp;
+
+        let temp = barra1.getPosy()+60;
+        do barra1.setPosy2(temp);
+        let temp = barra2.getPosy()+60;
+        do barra2.setPosy2(temp);
+        return;
+    }
+
+
+    method void duplicarBola(){
+
+        if (jugador1.getMarcador()-jugador2.getMarcador()>2){
+            if (bola.getPosx()<255){
+                if (incrementado=0){
+                    do bola.duplicarRadio();
+                    let incrementado=1;
+                }
+            }else{
+                do bola.setRadio(5);
+                let incrementado=0;
+            }
+        }else {
+            if (jugador2.getMarcador()-jugador1.getMarcador()>2){
+                if (bola.getPosx()>255){
+                    if (incrementado=0){
+                        do bola.duplicarRadio();
+                        let incrementado=1;
+                    }
+                }else{
+                    do bola.setRadio(5);
+                    let incrementado=0;
+                }
+            }
+        }
+
+        return;
+    }
+
+
+
+
+    method Player getJugador1(){
+        return jugador1;
+    }
+
+    method Player getJugador2(){
+        return jugador2;
+    }
+}

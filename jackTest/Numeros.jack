@@ -1,0 +1,96 @@
+class Numeros{
+
+    field int posx;
+    field int posy;
+
+    constructor Numeros new(int x, int y){
+        let posx = x;
+        let posy=y;
+        return this;
+    }
+
+
+    method void drawNumber(int numero){
+        do borrar();
+        if (numero = 0){
+            do Screen.drawRectangle(posx,posy, posx+20, posy+40);
+            do Screen.setColor(false);
+            do Screen.drawRectangle(posx+5,posy+5, posx+15, posy+35);
+            do Screen.setColor(true); 
+        }
+        if (numero = 1){
+            do Screen.drawRectangle(posx+15,posy, posx+20, posy+40);
+        }
+        if (numero = 2){
+            do Screen.drawRectangle(posx,posy, posx+20, posy+40);
+            do Screen.setColor(false);
+            do Screen.drawRectangle(posx, posy+5,posx+15 ,posy+17 );
+            do Screen.drawRectangle(posx+5, posy+22,posx+20 ,posy+35 );
+            do Screen.setColor(true);
+        }
+        if (numero = 3){
+            do Screen.drawRectangle(posx,posy, posx+20, posy+40);
+            do Screen.setColor(false);
+            do Screen.drawRectangle(posx,posy+5,posx+15 ,posy+17 );
+            do Screen.drawRectangle(posx,posy+22,posx+15 ,posy+35 );
+            do Screen.setColor(true);
+        }
+        if (numero = 4){
+            do Screen.drawRectangle(posx,posy, posx+20, posy+40);
+            do Screen.setColor(false);
+            do Screen.drawRectangle(posx+5,posy,posx+15 ,posy+17 );
+            do Screen.drawRectangle(posx,posy+22,posx+15 ,posy+40 );
+            do Screen.setColor(true);
+        }
+        if (numero = 5){
+            do Screen.drawRectangle(posx,posy, posx+20, posy+40);
+            do Screen.setColor(false);
+            do Screen.drawRectangle(posx+5,posy+5,posx+20 ,posy+17 );
+            do Screen.drawRectangle(posx,posy+22,posx+15 ,posy+35 );
+            do Screen.setColor(true);
+        }
+        if (numero = 6){
+            do Screen.drawRectangle(posx,posy, posx+20, posy+40);
+            do Screen.setColor(false);
+            do Screen.drawRectangle(posx+5,posy+5,posx+20 ,posy+17 );
+            do Screen.drawRectangle(posx+5,posy+22,posx+15 ,posy+35 );
+            do Screen.setColor(true);
+        }
+        if (numero = 7){
+            do Screen.drawRectangle(posx,posy, posx+20, posy+40);
+            do Screen.setColor(false);
+            do Screen.drawRectangle(posx,posy+5,posx+15 ,posy+40 );
+            do Screen.setColor(true);
+        }
+        if (numero = 8){
+            do Screen.drawRectangle(posx,posy, posx+20, posy+40);
+            do Screen.setColor(false);
+            do Screen.drawRectangle(posx+5,posy+5,posx+15 ,posy+17 );
+            do Screen.drawRectangle(posx+5,posy+22,posx+15 ,posy+35 );
+            do Screen.setColor(true);
+        }
+        if (numero = 9){
+            do Screen.drawRectangle(posx,posy, posx+20, posy+40);
+            do Screen.setColor(false);
+            do Screen.drawRectangle(posx+5,posy+5,posx+15 ,posy+17 );
+            do Screen.drawRectangle(posx,posy+22,posx+15 ,posy+40 );
+            do Screen.setColor(true);
+        }
+        return;
+    }
+    method void borrar (){
+        do Screen.setColor(false);
+        do Screen.drawRectangle(posx,posy, posx+20, posy+40);
+        do Screen.setColor(true);
+        return;
+    }
+
+
+    method void dispose(){
+        do Memory.deAlloc(this);
+        return;
+    }
+
+
+
+}

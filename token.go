@@ -7,6 +7,18 @@ import (
 	"unicode"
 )
 
+type Token struct {
+	tokenType TokenType
+	token     string
+}
+
+func NewToken(tipo TokenType, token string) *Token {
+	return &Token{
+		tokenType: tipo,
+		token:     token,
+	}
+}
+
 type Position struct {
 	line   int
 	column int
@@ -17,16 +29,16 @@ type Lexer struct {
 	reader *bufio.Reader
 }
 
-type Token int
+type TokenType int
 
 const (
 	EOF = iota
 	ILLEGAL
-	IDENT
+	IDENTIFIER
 	KEYWORD
 	SYMBOL
 	STRINGCONST
-
+	NUMBER
 	// Infix ops
 	ADD // +
 	SUB // -
@@ -79,11 +91,11 @@ const (
 var tokens = []string{
 	EOF:         "EOF",
 	ILLEGAL:     "ILLEGAL",
-	IDENT:       "IDENTIFIER",
+	IDENTIFIER:  "IDENTIFIER",
 	KEYWORD:     "KEYWORD",
 	SYMBOL:      "SYMBOL",
 	STRINGCONST: "STRINGCONST",
-
+	NUMBER:      "NUMBER",
 	// Infix ops
 	ADD: "+",
 	SUB: "-",
@@ -138,7 +150,7 @@ var tokenKeyword = []string{
 	RETURN:      "return",
 }
 
-func (t Token) String() string {
+func (t TokenType) String() string {
 	return tokens[t]
 }
 
@@ -151,13 +163,14 @@ func NewLexer(reader io.Reader) *Lexer {
 
 // Lex scans the input for the next token. It returns the position of the token,
 // the token's type, and the literal value.
-func (l *Lexer) Lex() (Position, Token, string) {
+func (l *Lexer) tokenize() *Token {
 	// keep looping until we return a token
 	for {
 		r, _, err := l.reader.ReadRune()
 		if err != nil {
 			if err == io.EOF {
-				return l.pos, EOF, ""
+				return NewToken(EOF, "")
+				//return l.pos, EOF, ""
 			}
 
 			// at this point there isn't much we can do, and the compiler
@@ -173,70 +186,70 @@ func (l *Lexer) Lex() (Position, Token, string) {
 			l.resetPosition()
 
 		case '+':
-			return l.pos, SYMBOL, "+"
+			return NewToken(SYMBOL, "+")
+			//return l.pos, SYMBOL, "+"
 		case '-':
-			return l.pos, SYMBOL, "-"
+			return NewToken(SYMBOL, "-")
 		case '*':
-			return l.pos, SYMBOL, "*"
+			return NewToken(SYMBOL, "*")
 		case '/':
-			return l.pos, SYMBOL, "/"
+			return NewToken(SYMBOL, "/")
 		case '=':
-			return l.pos, SYMBOL, "="
+			return NewToken(SYMBOL, "=")
 		case '{':
-			return l.pos, SYMBOL, "{"
+			return NewToken(SYMBOL, "{")
 		case '}':
-			return l.pos, SYMBOL, "}"
+			return NewToken(SYMBOL, "}")
 		case '(':
-			return l.pos, SYMBOL, "("
+			return NewToken(SYMBOL, "(")
 		case ')':
-			return l.pos, SYMBOL, ")"
+			return NewToken(SYMBOL, ")")
 		case '[':
-			return l.pos, SYMBOL, "["
+			return NewToken(SYMBOL, "[")
 		case ']':
-			return l.pos, SYMBOL, "]"
+			return NewToken(SYMBOL, "]")
 		case '.':
-			return l.pos, SYMBOL, "."
+			return NewToken(SYMBOL, ".")
 		case ',':
-			return l.pos, SYMBOL, ","
+			return NewToken(SYMBOL, ",")
 		case ';':
-			return l.pos, SYMBOL, ";"
+			return NewToken(SYMBOL, ";")
 		case '&':
-			return l.pos, SYMBOL, "&"
+			return NewToken(SYMBOL, "&")
 		case '|':
-			return l.pos, SYMBOL, "|"
+			return NewToken(SYMBOL, "|")
 		case '<':
-			return l.pos, SYMBOL, "<"
+			return NewToken(SYMBOL, "<")
 		case '>':
-			return l.pos, SYMBOL, ">"
+			return NewToken(SYMBOL, ">")
 		case '~':
-			return l.pos, SYMBOL, "~"
-
+			return NewToken(SYMBOL, "~")
 		case '"':
-			return l.pos, STRINGCONST, l.lexStringLiteral()
+			return NewToken(STRINGCONST, l.lexStringConst())
 		default:
 			if unicode.IsSpace(r) {
 				continue // nothing to do here, just move on
 			} else if unicode.IsDigit(r) {
 				// backup and let lexInt rescan the beginning of the int
-				startPos := l.pos
+				//startPos := l.pos
 				l.backup()
 				lit := l.lexInt()
-				return startPos, INT, lit
+				return NewToken(NUMBER, lit)
 			} else if unicode.IsLetter(r) {
 				// backup and let lexIdent rescan the beginning of the ident
-				startPos := l.pos
+				//startPos := l.pos
 				l.backup()
 				lit := l.lexString()
 
 				for _, i := range tokenKeyword {
 					if i == lit {
-						return startPos, KEYWORD, lit
+						return NewToken(KEYWORD, lit)
 					}
 				}
 
-				return startPos, IDENT, lit
+				return NewToken(IDENTIFIER, lit)
 			} else {
-				return l.pos, ILLEGAL, string(r)
+				return NewToken(ILLEGAL, string(r))
 			}
 		}
 	}
@@ -255,7 +268,7 @@ func (l *Lexer) backup() {
 	l.pos.column--
 }
 
-func (l *Lexer) lexStringLiteral() string {
+func (l *Lexer) lexStringConst() string {
 	var lit string
 	l.pos.column++
 	for {

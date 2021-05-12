@@ -1,0 +1,31 @@
+
+class Player {
+
+    field int marcador;
+
+    constructor Player new (){
+        let marcador = 0;
+        return this;
+    }
+
+    method int getMarcador(){
+        return marcador;
+    }
+
+    method void setMarcador(int x){
+        let marcador=x;
+        return;
+    }
+    
+    method void incrementarMarcador(){
+        let marcador=marcador+1;
+        return;
+    }
+
+    method void dispose(){
+        do Memory.deAlloc(this);
+        return;
+    }
+
+
+}

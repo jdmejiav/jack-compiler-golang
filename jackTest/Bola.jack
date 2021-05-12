@@ -1,0 +1,81 @@
+class Bola {
+
+    field int posx;
+    field int posy;
+    field int r;
+    field int direccion;
+
+
+    constructor Bola new (){
+        let posx = 255;
+        let posy = 127;
+        let r = 5;
+        let direccion=1;
+        return this;
+    }
+
+    method int getPosy(){
+        return posy;
+    }
+    method int getPosx(){
+        return posx;
+    }
+
+    method int getDireccion(){
+        return direccion;
+    }
+
+
+
+    method void setPosx(int pos){
+        let posx = pos;
+        return;
+    }
+
+    method void setPosy(int pos){
+        let posy = pos;
+        return;
+    }
+
+    method void setDireccion(int dir){
+        let direccion = dir;
+        return;
+    }
+
+    method void drawBola(){
+        do Screen.drawCircle(posx,posy,r);
+        return;
+
+    }
+
+    method void duplicarRadio(){
+        let r = r +r;
+        return;
+    }
+    
+
+    method int getRadio(){
+        return r;
+    }
+
+    method void setRadio(int radio){
+        let r = radio;
+        return;
+    }
+
+
+
+    method void clearBola(){
+        do Screen.setColor(false);
+        do Screen.drawCircle(posx,posy,r);
+        do Screen.setColor(true);
+        return;
+    }
+    
+    method void dispose(){
+        do Memory.deAlloc(this);
+        return;
+    }
+
+
+}

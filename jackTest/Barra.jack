@@ -1,0 +1,91 @@
+class Barra {
+    
+    field int posx;
+    field int posy;
+    field int posx2;
+    field int posy2;
+    
+
+    
+    constructor Barra new (int x, int y, int x2, int y2) {
+        let posx = x;
+        let posy = y;
+        let posx2 =x2;
+        let posy2= y2;
+        return this;
+    }
+
+    method int getPosy(){
+        return posy;
+    }
+
+
+    method void setPosy(int pos){
+        let posy = pos;
+        return;
+    }
+
+    method int getPosy2(){
+        return posy2;
+    }
+
+
+    method void setPosy2(int pos){
+        let posy2 = pos;
+        return;
+    }
+
+    method int getPosx(){
+        return posx;
+    }
+
+    method void setPosx(int pos){
+        let posx=pos;
+        return;
+    }
+
+    method int getPosx2(){
+        return posx2;
+    }
+
+    method void setPosx2(int pos){
+        let posx2=pos;
+        return;
+    }
+
+
+
+    method void moveUp(){
+        if (posy>10){
+            do Screen.setColor(false);
+            do drawBarra();
+            do Screen.setColor(true);
+            let posy= posy-5;
+            let posy2= posy2-5;
+        }
+        
+        return;   
+    }
+
+    method void moveDown(){
+        if (posy2<245){
+            do Screen.setColor(false);
+            do drawBarra();
+            do Screen.setColor(true);
+            let posy= posy+5;
+            let posy2= posy2+5;
+        }
+        return;
+
+    }
+
+    method void drawBarra(){
+        do Screen.drawRectangle(posx, posy ,posx2 ,posy2);
+        return;
+    }
+
+    method void  dispose(){
+        do Memory.deAlloc(this);
+        return;
+    }
+}

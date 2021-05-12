@@ -1,0 +1,81 @@
+class Controller {
+    
+    field Tablero tablero;
+
+
+    constructor Controller new (){
+        let tablero = Tablero.new();
+        return this;
+    }
+
+    method void start (){
+        var Barra temp;
+        var char entrada;
+        var Bola tempBola;
+        var Player tempJugador;
+        let tablero= Tablero.new();
+
+        do tablero.drawTablero();
+        while (true){
+            let entrada= Keyboard.keyPressed();
+
+            if (entrada = 131){
+                let temp=tablero.getBarra1();
+                do temp.moveUp();
+
+            }
+            if (entrada = 133){
+                let temp = tablero.getBarra1();
+                do temp.moveDown();
+
+            }
+            if (entrada = 83){ // 'S'
+                let temp = tablero.getBarra2();
+                do temp.moveDown();
+
+            }
+            if (entrada = 115){ // 's'
+                let temp = tablero.getBarra2();
+                do temp.moveDown();
+
+            }
+
+            if (entrada = 87){ // 'W'
+                let temp = tablero.getBarra2();         
+                do temp.moveUp();
+
+            }
+            if (entrada = 119){ // 'w'
+                let temp = tablero.getBarra2();
+                do temp.moveUp();
+
+
+            }
+            let tempBola= tablero.getBola();
+            do tablero.moveBola(); 
+            do tablero.drawTablero();
+            do tablero.setBola(tempBola);
+
+            let tempJugador = tablero.getJugador1();
+            if (tempJugador.getMarcador()=10){
+                do tablero.dispose();
+                return;
+            }
+            let tempJugador = tablero.getJugador2();
+            if (tempJugador.getMarcador()=10){
+                do tablero.dispose();
+                return;
+            }
+
+
+            let entrada=0;
+            do Sys.wait(20);
+        }
+
+        return;
+    }
+
+    
+
+
+}
