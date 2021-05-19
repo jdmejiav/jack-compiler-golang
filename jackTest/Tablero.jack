@@ -1,5 +1,5 @@
 class Tablero {
-    // attributes and methods
+
     field Barra barra1;
     field Barra barra2;
     field Bola bola;
@@ -20,7 +20,7 @@ class Tablero {
         let jugador1= Player.new();
         let jugador2= Player.new();
         let marcadorJugador1 = Numeros.new(275,50);
-        let marcadorJugador2 = Numeros.new(215,50); 
+        let marcadorJugador2 = Numeros.new(215,50);
         let incrementado=0;
         return this;
     }
@@ -42,10 +42,10 @@ class Tablero {
         return;
     }
     method void drawTablero(){
-        do barra1.drawBarra();                              //barra1
-        do barra2.drawBarra();                              //barra2 
-        do bola.drawBola();                                 //División
-        do Screen.drawRectangle(254,0,256,255);             //Bola
+        do barra1.drawBarra();
+        do barra2.drawBarra();
+        do bola.drawBola();
+        do Screen.drawRectangle(254,0,256,255);
 
 
 
@@ -58,25 +58,25 @@ class Tablero {
     method void moveBola(){
 
         var int temp;
-        
+
         do bola.clearBola();
         do duplicarBola();
 
         if (bola.getPosy()-bola.getRadio()<10){
-            if (bola.getDireccion() = 0){         //derecha Subiendo
-                do bola.setDireccion(1);        //derecha Bajando
+            if (bola.getDireccion() = 0){
+                do bola.setDireccion(1);
             }
-            if (bola.getDireccion() = 2){         //izquierda Dubiendo
-                do bola.setDireccion(3);        //izquierda bajando
+            if (bola.getDireccion() = 2){
+                do bola.setDireccion(3);
             }
         }
 
         if (bola.getPosy()+bola.getRadio()>250){
-            if (bola.getDireccion() = 1){         //derecha bajando
-                do bola.setDireccion(0);      //derecha subiendo
+            if (bola.getDireccion() = 1){
+                do bola.setDireccion(0);
             }
-            if(bola.getDireccion() = 3){          //izquierda bajando
-                do bola.setDireccion(2);        //izquierda subiendo
+            if(bola.getDireccion() = 3){
+                do bola.setDireccion(2);
             }
 
         }
@@ -87,7 +87,7 @@ class Tablero {
             do bola.setPosy(127);
             do jugador1.incrementarMarcador();
         }
-        
+
         if (bola.getPosx()+bola.getRadio() > 500){
             do bola.setPosx(255);
             do bola.setPosy(127);
@@ -104,7 +104,7 @@ class Tablero {
         if (bola.getPosx()-bola.getRadio() < 15){
             if (barra1.getPosy() < bola.getPosy()){
                 if (barra1.getPosy2() > bola.getPosy()){
-                    
+
                     if (barra1.getPosy()+((barra1.getPosy2()-barra1.getPosy())/2) > bola.getPosy()){
                         do bola.setDireccion(0);
                         let temp = barra1.getPosy2();
@@ -129,31 +129,24 @@ class Tablero {
                             do barra1.setPosy2(temp);
                         }
                     }
-                    
-                    
-                    /*
-                    if (bola.getDireccion() = 2){
-                        do bola.setDireccion(0);
-                    }
-                    if (bola.getDireccion() = 3){
-                        do bola.setDireccion(1);
-                    }
-                    */
+
+
+
                 }
             }
 
         }
 
         if (bola.getPosx()+bola.getRadio()> 497){
-            
+
             if (barra2.getPosy() < bola.getPosy()){
-                
+
                 if (barra2.getPosy2() > bola.getPosy()){
-                    
+
                     if (barra2.getPosy()+(barra2.getPosy2()-barra2.getPosy())/2 > bola.getPosy()){
 
 
-                        
+
                         do bola.setDireccion(2);
 
                         let temp = barra2.getPosy2();
@@ -169,7 +162,7 @@ class Tablero {
                         }
                     if (barra2.getPosy()+((barra2.getPosy2()-barra2.getPosy())/2)-5<  bola.getPosy() ){
                         if (barra2.getPosy()+((barra2.getPosy2()-barra2.getPosy())/2)+5 >  bola.getPosy() ){
-                            
+
                             let temp = barra2.getPosy2();
                             let temp= temp+1;
                             do barra2.setPosy2(temp);
@@ -178,43 +171,37 @@ class Tablero {
                     }
 
                     }
-                    
-                    
-                    /*
-                    if (bola.getDireccion() = 0){
-                        do bola.setDireccion(2);
-                    }
-                    if (bola.getDireccion() = 1){
-                        do bola.setDireccion(3);
-                    }*/
+
+
+                  
                 }
             }
 
         }
 
-        if (bola.getDireccion()=0){ //derecha subiendo 
+        if (bola.getDireccion()=0){
             do bola.setPosx(bola.getPosx()+5);
             do bola.setPosy(bola.getPosy()-5);
         }
-        if (bola.getDireccion()=1){ //derecha bajando 
+        if (bola.getDireccion()=1){
             do bola.setPosx(bola.getPosx()+5);
             do bola.setPosy(bola.getPosy()+5);
         }
-        if (bola.getDireccion() = 2){ //izquierda subiendo 
+        if (bola.getDireccion() = 2){
             do bola.setPosx(bola.getPosx()-5);
             do bola.setPosy(bola.getPosy()-5);
         }
-        if (bola.getDireccion()=3){ //izquierda bajando 
+        if (bola.getDireccion()=3){
             do bola.setPosx(bola.getPosx()-5);
             do bola.setPosy(bola.getPosy()+5);
         }
 
 
 
-        if (bola.getDireccion()=4){ //Ángulo recto derecha
+        if (bola.getDireccion()=4){
             do bola.setPosx(bola.getPosx()+5);
         }
-        if (bola.getDireccion()=5){ //Ángulo recto izquierda
+        if (bola.getDireccion()=5){
             do bola.setPosx(bola.getPosx()-5);
         }
 
@@ -223,7 +210,7 @@ class Tablero {
         return;
 
 
-    }    
+    }
 
     method void dispose(){
         do Memory.deAlloc(this);

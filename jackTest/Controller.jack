@@ -1,5 +1,5 @@
 class Controller {
-    
+
     field Tablero tablero;
 
 
@@ -29,30 +29,30 @@ class Controller {
                 do temp.moveDown();
 
             }
-            if (entrada = 83){ // 'S'
+            if (entrada = 83){
                 let temp = tablero.getBarra2();
                 do temp.moveDown();
 
             }
-            if (entrada = 115){ // 's'
+            if (entrada = 115){
                 let temp = tablero.getBarra2();
                 do temp.moveDown();
 
             }
 
-            if (entrada = 87){ // 'W'
-                let temp = tablero.getBarra2();         
+            if (entrada = 87){
+                let temp = tablero.getBarra2();
                 do temp.moveUp();
 
             }
-            if (entrada = 119){ // 'w'
+            if (entrada = 119){
                 let temp = tablero.getBarra2();
                 do temp.moveUp();
 
 
             }
             let tempBola= tablero.getBola();
-            do tablero.moveBola(); 
+            do tablero.moveBola();
             do tablero.drawTablero();
             do tablero.setBola(tempBola);
 
@@ -75,7 +75,7 @@ class Controller {
         return;
     }
 
-    
+
 
 
 }

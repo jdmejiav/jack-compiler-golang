@@ -42,8 +42,11 @@ func (a *Analyzer) Analyze() {
 }
 
 func (a *Analyzer) identifyToken(i int) {
-	a.stack.ToString()
-	fmt.Println(a.stack.pos(i).stringLiteral)
+	//a.stack.ToString()
+
+	//fmt.Print(a.stack.pos(i).stringLiteral)
+	//fmt.Print("\t\t")
+	//fmt.Printf("%d",a.stack.pos(i).tokenType)
 	if a.stack.pos(i).terminalToken {
 		if a.tokens[i].token == a.stack.pos(i).stringLiteral {
 			i++
@@ -102,7 +105,6 @@ func (a *Analyzer) identifyToken(i int) {
 			break
 
 		case IFSTATEMENT:
-			break
 			a.ifStatement(i)
 			break
 		case WHILESTATEMENT:
@@ -137,24 +139,29 @@ func (a *Analyzer) identifyToken(i int) {
 			a.termProd(i) //este es el de las nuevas reglas en term
 			break
 
-			case TERMCOND:
-				a.termCond(i)	//este es el de (<op><term>)*
-				break
+		case TERMCOND:
+			a.termCond(i) //este es el de (<op><term>)*
+			break
 
-			case EXPRESSIONCOND:
-				a.expressionCond(i) // Este es el del return
-				break
-		/*
-
-
-
-
+		case EXPRESSIONCOND:
+			a.expressionCond(i) // Este es el del return
+			break
 
 		case SUBROUTINECALL:
 			a.subRoutineCall(i)
 			break
-		*/
+		case EXPRESSIONLIST:
+			a.expressionList(i) // Este es el del return
+			break
+		case EXPRESSIONLISTCOND:
+				a.expressionListCond(i) // Este es el del return
+				break
+		case SUBROUTINEDECCOND:
+			a.subRoutineDecCond(i)
+			break
 		}
+
+
 	}
 }
 
@@ -173,12 +180,9 @@ func (a *Analyzer) axioma(i int) {
 
 func (a *Analyzer) className(i int) {
 	arr := []TokenAnalysis{
-		NewTokenAnalysis(false, SYMBOL, a.tokens[i].token),
+		NewTokenAnalysis(true, IDENTIFIER, a.tokens[i].token),
 	}
 	a.stack.pushAtPos(i, arr)
-	i++
-	//a.stack.ToString()
-	fmt.Println("sale del className")
 	a.identifyToken(i)
 
 }
@@ -224,7 +228,7 @@ func (a *Analyzer) typeId(i int) {
 		}
 	} else if "boolean" == a.tokens[i].token {
 		arr = []TokenAnalysis{
-			NewTokenAnalysis(true, CHAR, "char"),
+			NewTokenAnalysis(true, CHAR, "boolean"),
 		}
 	} else if IDENTIFIER == a.tokens[i].tokenType {
 		arr = []TokenAnalysis{
@@ -241,14 +245,16 @@ func (a *Analyzer) typeId(i int) {
 
 func (a *Analyzer) varName(i int) {
 	arr := []TokenAnalysis{
-		NewTokenAnalysis(false, IDENTIFIER, a.tokens[i].token),
+		NewTokenAnalysis(true, IDENTIFIER, a.tokens[i].token),
 	}
 	a.stack.pushAtPos(i, arr)
-	i++
+	//i++
 	a.identifyToken(i)
 }
 
 func (a *Analyzer) subRoutineDec(i int) {
+
+
 	var arr []TokenAnalysis
 	if "constructor" == a.tokens[i].token {
 		arr = []TokenAnalysis{
@@ -274,7 +280,7 @@ func (a *Analyzer) subRoutineDec(i int) {
 			NewTokenAnalysis(false, PARAMETERLIST, ""),
 			NewTokenAnalysis(true, RPARENT, ")"),
 			NewTokenAnalysis(false, SUBROUTINEBODY, ""),
-			NewTokenAnalysis(false, SUBROUTINEDEC, ""),
+			NewTokenAnalysis(false, SUBROUTINEDECCOND, ""),
 		}...)
 	} else {
 		arr = append(arr, []TokenAnalysis{
@@ -284,7 +290,7 @@ func (a *Analyzer) subRoutineDec(i int) {
 			NewTokenAnalysis(false, PARAMETERLIST, ""),
 			NewTokenAnalysis(true, RPARENT, ")"),
 			NewTokenAnalysis(false, SUBROUTINEBODY, ""),
-			NewTokenAnalysis(false, SUBROUTINEDEC, ""),
+			NewTokenAnalysis(false, SUBROUTINEDECCOND, ""),
 		}...)
 	}
 	a.stack.pushAtPos(i, arr)
@@ -295,21 +301,22 @@ func (a *Analyzer) subRoutineDec(i int) {
 
 func (a *Analyzer) subRoutineName(i int) {
 	arr := []TokenAnalysis{
-		NewTokenAnalysis(false, IDENTIFIER, a.tokens[i].token),
+		NewTokenAnalysis(true, IDENTIFIER, a.tokens[i].token),
 	}
 	a.stack.pushAtPos(i, arr)
-	i++
-	a.stack.ToString()
-	fmt.Println("sale del subRoutineName")
+
+	//a.stack.ToString()
+	//fmt.Println("sale del subRoutineName")
 	a.identifyToken(i)
 }
 
 func (a *Analyzer) parameterList(i int) {
 	var arr []TokenAnalysis
-	fmt.Println(a.tokens[i+2].token)
+	//fmt.Println(a.tokens[i+2].token)
+
 	if ")" == a.tokens[i].token {
 		a.stack.deletePos(i)
-		a.stack.ToString()
+
 		a.identifyToken(i)
 		return
 	} else if ")" == a.tokens[i+2].token {
@@ -326,12 +333,12 @@ func (a *Analyzer) parameterList(i int) {
 		}
 	}
 	a.stack.pushAtPos(i, arr)
-	i++
+	//i++
 	a.identifyToken(i)
 }
 
 func (a *Analyzer) subRoutineBody(i int) {
-	fmt.Println("acá se inserta el subroutinebody")
+	//fmt.Println("acá se inserta el subroutinebody")
 	arr := []TokenAnalysis{
 		NewTokenAnalysis(true, SYMBOL, "{"),
 		NewTokenAnalysis(false, VARDEC, ""),
@@ -359,278 +366,344 @@ func (a *Analyzer) varDec(i int) {
 	a.identifyToken(i)
 }
 
-
 func (a *Analyzer) statements(i int) {
 	var arr []TokenAnalysis
 
 	if a.tokens[i].token == "let" {
 		arr = []TokenAnalysis{
-			NewTokenAnalysis(false,LETSTATEMENT,""),
-			NewTokenAnalysis(false,STATEMENTS,""),
+			NewTokenAnalysis(false, LETSTATEMENT, ""),
+			NewTokenAnalysis(false, STATEMENTS, ""),
 		}
 	} else if a.tokens[i].token == "if" {
 		arr = []TokenAnalysis{
-			NewTokenAnalysis(false,IFSTATEMENT,""),
-			NewTokenAnalysis(false,STATEMENTS,""),
+			NewTokenAnalysis(false, IFSTATEMENT, ""),
+			NewTokenAnalysis(false, STATEMENTS, ""),
 		}
 	} else if a.tokens[i].token == "while" {
 		arr = []TokenAnalysis{
-			NewTokenAnalysis(false,WHILESTATEMENT,""),
-			NewTokenAnalysis(false,STATEMENTS,""),
+			NewTokenAnalysis(false, WHILESTATEMENT, ""),
+			NewTokenAnalysis(false, STATEMENTS, ""),
 		}
 	} else if a.tokens[i].token == "do" {
 		arr = []TokenAnalysis{
-			NewTokenAnalysis(false,DOSTATEMENT,""),
-			NewTokenAnalysis(false,STATEMENTS,""),
+			NewTokenAnalysis(false, DOSTATEMENT, ""),
+			NewTokenAnalysis(false, STATEMENTS, ""),
 		}
 	} else if a.tokens[i].token == "return" {
 		arr = []TokenAnalysis{
-			NewTokenAnalysis(false,RETURNSTATEMENT,""),
-			NewTokenAnalysis(false,STATEMENTS,""),
+			NewTokenAnalysis(false, RETURNSTATEMENT, ""),
+			NewTokenAnalysis(false, STATEMENTS, ""),
 		}
-	}else{
+	} else {
 		a.stack.deletePos(i)
 		a.identifyToken(i)
 		return
 	}
-	a.stack.pushAtPos(i,arr)
+	a.stack.pushAtPos(i, arr)
 	a.identifyToken(i)
 }
 func (a *Analyzer) array(i int) {
-	if a.tokens[i].token=="["{
-			arr:=[]TokenAnalysis{
-				NewTokenAnalysis(true,SYMBOL,"["),
-				NewTokenAnalysis(false,EXPRESSION,""),
-				NewTokenAnalysis(true,SYMBOL,"]"),
-			}
-			a.stack.pushAtPos(i,arr)
-			a.identifyToken(i)
-	}else{
+	if a.tokens[i].token == "[" {
+		arr := []TokenAnalysis{
+			NewTokenAnalysis(true, SYMBOL, "["),
+			NewTokenAnalysis(false, EXPRESSION, ""),
+			NewTokenAnalysis(true, SYMBOL, "]"),
+		}
+		a.stack.pushAtPos(i, arr)
+		a.identifyToken(i)
+	} else {
 		a.stack.deletePos(i)
 		a.identifyToken(i)
 	}
 }
 
-
-
-func (a *Analyzer) letStatement(i int){
-		var arr []TokenAnalysis
-		if a.tokens[i].token=="let"{
-			arr = []TokenAnalysis{
-				NewTokenAnalysis(true,KEYWORD,"let"),
-				NewTokenAnalysis(false,VARNAME,""),
-				NewTokenAnalysis(false,ARRAY,""),
-				NewTokenAnalysis(true,SYMBOL,"="),
-				NewTokenAnalysis(false,EXPRESSION,""),
-				NewTokenAnalysis(true,DOTANDCOMA,";"),
-			}
-		}else{
-			panic("There is an error at line "+strconv.Itoa(a.tokens[i].line)+":"+strconv.Itoa(a.tokens[i].column))
+func (a *Analyzer) letStatement(i int) {
+	var arr []TokenAnalysis
+	if a.tokens[i].token == "let" {
+		arr = []TokenAnalysis{
+			NewTokenAnalysis(true, KEYWORD, "let"),
+			NewTokenAnalysis(false, VARNAME, ""),
+			NewTokenAnalysis(false, ARRAY, ""),
+			NewTokenAnalysis(true, SYMBOL, "="),
+			NewTokenAnalysis(false, EXPRESSION, ""),
+			NewTokenAnalysis(true, DOTANDCOMA, ";"),
 		}
-		a.stack.pushAtPos(i,arr)
-		a.identifyToken(i)
+	} else {
+		panic("There is an error at line " + strconv.Itoa(a.tokens[i].line) + ":" + strconv.Itoa(a.tokens[i].column))
+	}
+	a.stack.pushAtPos(i, arr)
+	a.identifyToken(i)
 }
 
+func (a *Analyzer) ifStatement(i int) {
+	//fmt.Println("Entra al if")
+	if a.tokens[i].token == "if" {
 
-
-func (a *Analyzer) ifStatement(i int){
-	if a.tokens[i].token=="if"{
 		arr := []TokenAnalysis{
-			NewTokenAnalysis(true,KEYWORD,"if"),
-			NewTokenAnalysis(true,LPARENT,"("),
-			NewTokenAnalysis(false,EXPRESSION,""),
-			NewTokenAnalysis(true,RPARENT,")"),
-			NewTokenAnalysis(true,SYMBOL,"{"),
-			NewTokenAnalysis(false,STATEMENTS,""),
-			NewTokenAnalysis(true,SYMBOL,"}"),
-			NewTokenAnalysis(false,ELSESTATEMENT,""),
+			NewTokenAnalysis(true, KEYWORD, "if"),
+			NewTokenAnalysis(true, LPARENT, "("),
+			NewTokenAnalysis(false, EXPRESSION, ""),
+			NewTokenAnalysis(true, RPARENT, ")"),
+			NewTokenAnalysis(true, SYMBOL, "{"),
+			NewTokenAnalysis(false, STATEMENTS, ""),
+			NewTokenAnalysis(true, SYMBOL, "}"),
+			NewTokenAnalysis(false, ELSESTATEMENT, ""),
 		}
-		a.stack.pushAtPos(i,arr)
+		a.stack.pushAtPos(i, arr)
 		a.identifyToken(i)
-	}else{
-		panic("There is an error at line "+strconv.Itoa(a.tokens[i].line)+":"+strconv.Itoa(a.tokens[i].column))
+	} else {
+
+		panic("There is an error at line " + strconv.Itoa(a.tokens[i].line) + ":" + strconv.Itoa(a.tokens[i].column));
 	}
 }
-
 
 func (a *Analyzer) elseStatement(i int) {
-	if a.tokens[i].token=="else"{
+	if a.tokens[i].token == "else" {
 		arr := []TokenAnalysis{
-			NewTokenAnalysis(true,KEYWORD,"else"),
-			NewTokenAnalysis(true,SYMBOL,"{"),
-			NewTokenAnalysis(false,STATEMENTS,""),
-			NewTokenAnalysis(true,SYMBOL,"}"),
+			NewTokenAnalysis(true, KEYWORD, "else"),
+			NewTokenAnalysis(true, SYMBOL, "{"),
+			NewTokenAnalysis(false, STATEMENTS, ""),
+			NewTokenAnalysis(true, SYMBOL, "}"),
 		}
-		a.stack.pushAtPos(i,arr)
+		a.stack.pushAtPos(i, arr)
 		a.identifyToken(i)
-	}else{
+	} else {
 		a.stack.deletePos(i)
 		a.identifyToken(i)
 	}
 }
 
-
-
-func (a *Analyzer) whileStatement (i int){
-		if a.tokens[i].token=="while"{
-			arr := []TokenAnalysis{
-				NewTokenAnalysis(true,KEYWORD,"while"),
-				NewTokenAnalysis(true,LPARENT,"("),
-				NewTokenAnalysis(false,EXPRESSION,""),
-				NewTokenAnalysis(true,RPARENT,")"),
-				NewTokenAnalysis(true,SYMBOL,"{"),
-				NewTokenAnalysis(false,STATEMENTS,""),
-				NewTokenAnalysis(true,SYMBOL,"}"),
-				NewTokenAnalysis(false,ELSESTATEMENT,""),
-			}
-			a.stack.pushAtPos(i,arr)
-			a.identifyToken(i)
-		}else{
-			panic("There is an error at line "+strconv.Itoa(a.tokens[i].line)+":"+strconv.Itoa(a.tokens[i].column))
+func (a *Analyzer) whileStatement(i int) {
+	if a.tokens[i].token == "while" {
+		arr := []TokenAnalysis{
+			NewTokenAnalysis(true, KEYWORD, "while"),
+			NewTokenAnalysis(true, LPARENT, "("),
+			NewTokenAnalysis(false, EXPRESSION, ""),
+			NewTokenAnalysis(true, RPARENT, ")"),
+			NewTokenAnalysis(true, SYMBOL, "{"),
+			NewTokenAnalysis(false, STATEMENTS, ""),
+			NewTokenAnalysis(true, SYMBOL, "}"),
+			NewTokenAnalysis(false, ELSESTATEMENT, ""),
 		}
+		a.stack.pushAtPos(i, arr)
+		a.identifyToken(i)
+	} else {
+		panic("There is an error at line " + strconv.Itoa(a.tokens[i].line) + ":" + strconv.Itoa(a.tokens[i].column))
+	}
 }
 
-func (a *Analyzer) doStatement(i int){
+func (a *Analyzer) doStatement(i int) {
 
-		if a.tokens[i].token=="do"{
-			arr := []TokenAnalysis{
-				NewTokenAnalysis(true,KEYWORD,"do"),
-				NewTokenAnalysis(false,SUBROUTINECALL,""),
-				NewTokenAnalysis(true,DOTANDCOMA,";"),
-			}
-			a.stack.pushAtPos(i,arr)
-			a.identifyToken(i)
-		}else{
-			panic("There is an error at line "+strconv.Itoa(a.tokens[i].line)+":"+strconv.Itoa(a.tokens[i].column))
+	if a.tokens[i].token == "do" {
+		arr := []TokenAnalysis{
+			NewTokenAnalysis(true, KEYWORD, "do"),
+			NewTokenAnalysis(false, SUBROUTINECALL, ""),
+			NewTokenAnalysis(true, DOTANDCOMA, ";"),
 		}
+		a.stack.pushAtPos(i, arr)
+		a.identifyToken(i)
+	} else {
+		panic("There is an error at line " + strconv.Itoa(a.tokens[i].line) + ":" + strconv.Itoa(a.tokens[i].column))
+	}
 
 }
 
 func (a *Analyzer) returnStatement(i int) {
 
-	if a.tokens[i].token=="return" {
-			arr := []TokenAnalysis{
-				NewTokenAnalysis(true,KEYWORD,"return"),
-				NewTokenAnalysis(false,EXPRESSIONCOND,""),
-				NewTokenAnalysis(true,SYMBOL,";"),
-			}
-			a.stack.pushAtPos(i,arr)
-			a.identifyToken(i)
-	}else{
-		panic("There is an error at line "+strconv.Itoa(a.tokens[i].line)+":"+strconv.Itoa(a.tokens[i].column))
+	if a.tokens[i].token == "return" {
+		arr := []TokenAnalysis{
+			NewTokenAnalysis(true, KEYWORD, "return"),
+			NewTokenAnalysis(false, EXPRESSIONCOND, ""),
+			NewTokenAnalysis(true, SYMBOL, ";"),
+		}
+		a.stack.pushAtPos(i, arr)
+		a.identifyToken(i)
+	} else {
+		panic("There is an error at line " + strconv.Itoa(a.tokens[i].line) + ":" + strconv.Itoa(a.tokens[i].column))
 	}
 }
 
-func (a *Analyzer) expression (i int){
+func (a *Analyzer) expression(i int) {
 
 	arr := []TokenAnalysis{
-		NewTokenAnalysis(false,TERM,""),
-		NewTokenAnalysis(false,TERMCOND,""),
+		NewTokenAnalysis(false, TERM, ""),
+		NewTokenAnalysis(false, TERMCOND, ""),
 	}
-	a.stack.pushAtPos(i,arr)
+	a.stack.pushAtPos(i, arr)
 	a.identifyToken(i)
 }
 
+func (a *Analyzer) term(i int) {
 
-func (a *Analyzer) term (i int) {
-
-	fmt.Println("LLega a term")
 	var arr []TokenAnalysis
-	if a.tokens[i].tokenType==INTEGERCONSTANT {
-		arr=[]TokenAnalysis{
-			NewTokenAnalysis(true,INTEGERCONSTANT,a.tokens[i].token),
+	if a.tokens[i].tokenType == INTEGERCONSTANT {
+		arr = []TokenAnalysis{
+			NewTokenAnalysis(true, INTEGERCONSTANT, a.tokens[i].token),
 		}
-	} else if a.tokens[i].tokenType==STRINGCONST {
-		arr=[]TokenAnalysis{
-			NewTokenAnalysis(true,STRINGCONST,a.tokens[i].token),
+	} else if a.tokens[i].tokenType == STRINGCONST {
+		arr = []TokenAnalysis{
+			NewTokenAnalysis(true, STRINGCONST, a.tokens[i].token),
 		}
-	} else if a.tokens[i].tokenType==KEYWORD {
-		if a.tokens[i].token=="true"{
-			arr=[]TokenAnalysis{
-				NewTokenAnalysis(true,KEYWORD,"true"),
+	} else if a.tokens[i].tokenType == KEYWORD {
+		if a.tokens[i].token == "true" {
+			arr = []TokenAnalysis{
+				NewTokenAnalysis(true, KEYWORD, "true"),
 			}
-		}else if a.tokens[i].token=="false"{
-			arr=[]TokenAnalysis{
-				NewTokenAnalysis(true,KEYWORD,"false"),
+		} else if a.tokens[i].token == "false" {
+			arr = []TokenAnalysis{
+				NewTokenAnalysis(true, KEYWORD, "false"),
 			}
-		}else if a.tokens[i].token=="null"{
-			arr=[]TokenAnalysis{
-				NewTokenAnalysis(true,KEYWORD,"null"),
+		} else if a.tokens[i].token == "null" {
+			arr = []TokenAnalysis{
+				NewTokenAnalysis(true, KEYWORD, "null"),
 			}
-		}else if a.tokens[i].token=="this"{
-			arr=[]TokenAnalysis{
-				NewTokenAnalysis(true,KEYWORD,"this"),
-			}
-		}
-	}else if a.tokens[i].tokenType==OP ||  a.tokens[i].tokenType==UNARYOP{
-		if a.tokens[i].token=="-"{
-			arr=[]TokenAnalysis{
-				NewTokenAnalysis(true,UNARYOP,"-"),
-				NewTokenAnalysis(false,TERM,""),
-			}
-		}else if a.tokens[i].token=="~" || a.tokens[i].token=="!"{
-			arr=[]TokenAnalysis{
-				NewTokenAnalysis(true,UNARYOP,"!"),
-				NewTokenAnalysis(false,TERM,""),
+		} else if a.tokens[i].token == "this" {
+			arr = []TokenAnalysis{
+				NewTokenAnalysis(true, KEYWORD, "this"),
 			}
 		}
-	}else{
-		arr=[]TokenAnalysis{
-			NewTokenAnalysis(false,TERMPROD,""),
+	} else if a.tokens[i].tokenType == OP || a.tokens[i].tokenType == UNARYOP {
+		if a.tokens[i].token == "-" {
+			arr = []TokenAnalysis{
+				NewTokenAnalysis(true, UNARYOP, "-"),
+				NewTokenAnalysis(false, TERM, ""),
+			}
+		} else if a.tokens[i].token == "~" || a.tokens[i].token == "!" {
+			arr = []TokenAnalysis{
+				NewTokenAnalysis(true, UNARYOP, "!"),
+				NewTokenAnalysis(false, TERM, ""),
+			}
+		}
+	} else {
+		arr = []TokenAnalysis{
+			NewTokenAnalysis(false, TERMPROD, ""),
 		}
 	}
-	a.stack.pushAtPos(i,arr)
+	a.stack.pushAtPos(i, arr)
 	a.identifyToken(i)
 }
 
-func (a *Analyzer) termProd(i int){
-	fmt.Println("Entra a termProd")
-	fmt.Println(a.tokens[i+1].token)
+func (a *Analyzer) termProd(i int) {
+	//fmt.Println("Entra a termProd")
+	//fmt.Println(a.tokens[i+1].token)
 	var arr []TokenAnalysis
-	if a.tokens[i].token=="("{
+	if a.tokens[i].token == "(" {
 		arr = []TokenAnalysis{
-			NewTokenAnalysis(true,LPARENT,"("),
-			NewTokenAnalysis(false,EXPRESSION,""),
-			NewTokenAnalysis(true,RPARENT,")"),
+			NewTokenAnalysis(true, LPARENT, "("),
+			NewTokenAnalysis(false, EXPRESSION, ""),
+			NewTokenAnalysis(true, RPARENT, ")"),
 		}
-	}else if a.tokens[i+1].token=="(" || a.tokens[i+1].token=="."{
+	} else if a.tokens[i+1].token == "(" || a.tokens[i+1].token == "." {
 		arr = []TokenAnalysis{
-			NewTokenAnalysis(false,SUBROUTINECALL,""),
+			NewTokenAnalysis(false, SUBROUTINECALL, ""),
 		}
-	}else if a.tokens[i].tokenType==IDENTIFIER{
+	} else if a.tokens[i].tokenType == IDENTIFIER {
 		arr = []TokenAnalysis{
-			NewTokenAnalysis(false,VARNAME,""),
-			NewTokenAnalysis(false,ARRAY,""),
+			NewTokenAnalysis(false, VARNAME, ""),
+			NewTokenAnalysis(false, ARRAY, ""),
 		}
-	}else {
-		panic("Unknown token <"+a.tokens[i].token+"> at line "+strconv.Itoa(a.tokens[i].line)+":"+strconv.Itoa(a.tokens[i].column))
+	} else {
+		panic("Unknown token <" + a.tokens[i].token + "> at line " + strconv.Itoa(a.tokens[i].line) + ":" + strconv.Itoa(a.tokens[i].column))
 	}
-	a.stack.pushAtPos(i,arr)
+	a.stack.pushAtPos(i, arr)
 	a.identifyToken(i)
 }
-
 
 func (a *Analyzer) termCond(i int) {
-	if a.tokens[i].tokenType==OP {
+
+
+	if a.tokens[i].tokenType == OP {
 		arr := []TokenAnalysis{
-			NewTokenAnalysis(true,OP,a.tokens[i].token),
-			NewTokenAnalysis(false,TERM,""),
+			NewTokenAnalysis(true, OP, a.tokens[i].token),
+			NewTokenAnalysis(false, TERM,""),
+			NewTokenAnalysis(false, TERMCOND, ""),
 		}
-		a.stack.pushAtPos(i,arr)
+		a.stack.pushAtPos(i, arr)
 		a.identifyToken(i)
-	}else{
+	} else {
 		a.stack.deletePos(i)
 		a.identifyToken(i)
 	}
 }
 
 func (a *Analyzer) expressionCond(i int) {
-	if a.tokens[i].token==";"{
+	if a.tokens[i].token == ";" {
+		a.stack.deletePos(i)
+		a.identifyToken(i)
+	} else {
+		arr := []TokenAnalysis{
+			NewTokenAnalysis(false, EXPRESSION, ""),
+		}
+		a.stack.pushAtPos(i, arr)
+		a.identifyToken(i)
+	}
+}
+
+func (a *Analyzer) subRoutineCall(i int) {
+	var arr []TokenAnalysis
+	if a.tokens[i+1].token == "." {
+		arr = []TokenAnalysis{
+			NewTokenAnalysis(false,VARNAME,""),
+			NewTokenAnalysis(true,SYMBOL,"."),
+			NewTokenAnalysis(false,SUBROUTINENAME,""),
+			NewTokenAnalysis(true,LPARENT,"("),
+			NewTokenAnalysis(false,EXPRESSIONLIST,""),
+			NewTokenAnalysis(true,RPARENT,")"),
+		}
+	} else {
+		arr = []TokenAnalysis{
+			NewTokenAnalysis(false,SUBROUTINENAME,""),
+			NewTokenAnalysis(true,LPARENT,"("),
+			NewTokenAnalysis(false,EXPRESSIONLIST,""),
+			NewTokenAnalysis(true,RPARENT,")"),
+		}
+	}
+	a.stack.pushAtPos(i, arr)
+	a.identifyToken(i)
+}
+
+
+func (a *Analyzer) expressionList(i int) {
+
+	if a.tokens[i].token==")"{
 		a.stack.deletePos(i)
 		a.identifyToken(i)
 	}else{
-		arr := []TokenAnalysis{
+		arr:= []TokenAnalysis{
 			NewTokenAnalysis(false,EXPRESSION,""),
+			NewTokenAnalysis(false,EXPRESSIONLISTCOND,""),
+		}
+		a.stack.pushAtPos(i, arr)
+		a.identifyToken(i)
+	}
+}
+
+
+
+func (a *Analyzer) expressionListCond(i int) {
+	//fmt.Println("entra 2")
+	if a.tokens[i].token==")"{
+		a.stack.deletePos(i)
+		a.identifyToken(i)
+	}else if a.tokens[i].token==","{
+		arr:= []TokenAnalysis{
+			NewTokenAnalysis(true,SYMBOL,","),
+			NewTokenAnalysis(false,EXPRESSION,""),
+			NewTokenAnalysis(false,EXPRESSIONLISTCOND,""),
+		}
+		a.stack.pushAtPos(i, arr)
+		a.identifyToken(i)
+	}
+}
+
+func (a *Analyzer) subRoutineDecCond(i int){
+
+	if a.tokens[i].token =="}"{
+		a.stack.deletePos(i)
+		//a.stack.identifyToken(i)
+	}else{
+		arr:=[]TokenAnalysis{
+			NewTokenAnalysis(false,SUBROUTINEDEC,""),
 		}
 		a.stack.pushAtPos(i,arr)
 		a.identifyToken(i)

@@ -13,7 +13,7 @@ func main() {
 			panic(err)
 		}
 		var tokens []Token = []Token{}
-		fmt.Printf("<%v>\n", CLASSVARDEC)
+		//fmt.Printf("<%v>\n", CLASSVARDEC)
 		lexer := NewLexer(file)
 		for {
 			tokenTemp := lexer.tokenize()
@@ -21,10 +21,11 @@ func main() {
 				break
 			}
 			tokens = append(tokens, *tokenTemp)
-
-			fmt.Printf("<%v> %s </%v>\n", tokenTemp.tokenType, tokenTemp.token, tokenTemp.tokenType)
+			//fmt.Println(tokenTemp.token)
+			//fmt.Printf("<%v> %s </%v>\n", tokenTemp.tokenType, tokenTemp.token, tokenTemp.tokenType)
 		}
 		analyzer := NewAnalyzer(tokens)
 		analyzer.Analyze()
+		fmt.Printf("\n\n%s Grammar OK\n\n",i)
 	}
 }

@@ -109,6 +109,8 @@ const (
 	EXPRESSIONCOND						//58
 	TERMCOND									//59
 	TERMPROD									//60
+	EXPRESSIONLISTCOND				//61
+	SUBROUTINEDECCOND					//62
 )
 
 var tokens = []string{
