@@ -1,12 +1,12 @@
 class Barra {
-    
+
     field int posx;
     field int posy;
     field int posx2;
     field int posy2;
-    
 
-    
+
+
     constructor Barra new (int x, int y, int x2, int y2) {
         let posx = x;
         let posy = y;
@@ -63,8 +63,8 @@ class Barra {
             let posy= posy-5;
             let posy2= posy2-5;
         }
-        
-        return;   
+
+        return;
     }
 
     method void moveDown(){
