@@ -5,31 +5,31 @@ import (
 	"io"
 	"strconv"
 	"unicode"
+//	"fmt"
 )
 
 type Token struct {
 	tokenType TokenType
 	token     string
-	line			int
-	column		int
+	line      int
+	column    int
 }
 
-func NewToken(tipo TokenType, token string,line int,column int) *Token {
+func NewToken(tipo TokenType, token string, line int, column int) *Token {
 	return &Token{
 		tokenType: tipo,
 		token:     token,
-		line:			 line,
-		column:		 column,
+		line:      line,
+		column:    column,
 	}
 }
 
-func (t *Token) getToken() string{
+func (t *Token) getToken() string {
 	return t.token
 }
-func (t *Token) getTokenType() TokenType{
+func (t *Token) getTokenType() TokenType {
 	return t.tokenType
 }
-
 
 type Position struct {
 	line   int
@@ -41,86 +41,90 @@ type Lexer struct {
 	reader *bufio.Reader
 }
 
+type Copy struct {
+	pos    Position
+	reader *bufio.Reader
+}
+
 type TokenType int
 
 const (
-	EOF = iota								//0
-	ILLEGAL										//0
-	IDENTIFIER								//2
-	KEYWORD										//3
-	SYMBOL										//4
-	INTEGERCONSTANT						//5
-	STRINGCONST								//6
+	EOF             = iota //0
+	ILLEGAL                //0
+	IDENTIFIER             //2
+	KEYWORD                //3
+	SYMBOL                 //4
+	INTEGERCONSTANT        //5
+	STRINGCONST            //6
 
-	AXIOMA										//7
+	AXIOMA //7
 
-	CLASS											//8
-	CLASSVARDEC								//9
-	TYPE											//10
-	SUBROUTINEDEC							//11
-	PARAMETERLIST							//12
-	SUBROUTINEBODY						//13
-	VARDEC										//14
-	CLASSNAME									//15
-	SUBROUTINENAME						//16
-	VARNAME										//17
-	STATEMENTS								//18
-	STATEMENT									//19
-	LETSTATEMENT							//20
-	IFSTATEMENT								//21
-	WHILESTATEMENT						//22
-	DOSTATEMENT								//23
-	RETURNSTATEMENT						//24
-	EXPRESSION								//25
-	TERM											//26
-	SUBROUTINECALL						//27
-	EXPRESSIONLIST						//28
-	OP												//29
-	UNARYOP										//30
-	KEYWORDCONSTANT						//31
-	DOTANDCOMA								//32
+	CLASS           //8
+	CLASSVARDEC     //9
+	TYPE            //10
+	SUBROUTINEDEC   //11
+	PARAMETERLIST   //12
+	SUBROUTINEBODY  //13
+	VARDEC          //14
+	CLASSNAME       //15
+	SUBROUTINENAME  //16
+	VARNAME         //17
+	STATEMENTS      //18
+	STATEMENT       //19
+	LETSTATEMENT    //20
+	IFSTATEMENT     //21
+	WHILESTATEMENT  //22
+	DOSTATEMENT     //23
+	RETURNSTATEMENT //24
+	EXPRESSION      //25
+	TERM            //26
+	SUBROUTINECALL  //27
+	EXPRESSIONLIST  //28
+	OP              //29
+	UNARYOP         //30
+	KEYWORDCONSTANT //31
+	DOTANDCOMA      //32
 
-
-	CONSTRUCTOR								//33
-	FUNCTION									//34
-	METHOD										//35
-	FIELD											//36
-	STATIC										//37
-	VAR												//38
-	INT												//39
-	CHAR											//40
-	BOOLEAN										//41
-	VOID											//42
-	TRUE											//43
-	FALSE											//44
-	NULL											//45
-	THIS											//46
-	LET												//47
-	DO												//48
-	IF												//49
-	ELSE											//50
-	WHILE											//51
-	RETURN										//52
-	LPARENT										//53
-	RPARENT										//54
-	COMA											//55
-	ARRAY											//56
-	ELSESTATEMENT							//57
-	EXPRESSIONCOND						//58
-	TERMCOND									//59
-	TERMPROD									//60
-	EXPRESSIONLISTCOND				//61
-	SUBROUTINEDECCOND					//62
+	CONSTRUCTOR        //33
+	FUNCTION           //34
+	METHOD             //35
+	FIELD              //36
+	STATIC             //37
+	VAR                //38
+	INT                //39
+	CHAR               //40
+	BOOLEAN            //41
+	VOID               //42
+	TRUE               //43
+	FALSE              //44
+	NULL               //45
+	THIS               //46
+	LET                //47
+	DO                 //48
+	IF                 //49
+	ELSE               //50
+	WHILE              //51
+	RETURN             //52
+	LPARENT            //53
+	RPARENT            //54
+	COMA               //55
+	ARRAY              //56
+	ELSESTATEMENT      //57
+	EXPRESSIONCOND     //58
+	TERMCOND           //59
+	TERMPROD           //60
+	EXPRESSIONLISTCOND //61
+	SUBROUTINEDECCOND  //62
 )
 
 var tokens = []string{
-	EOF:         "EOF",
-	ILLEGAL:     "ILLEGAL",
-	IDENTIFIER:  "IDENTIFIER",
-	KEYWORD:     "KEYWORD",
-	SYMBOL:      "SYMBOL",
-	STRINGCONST: "STRINGCONST",
-	INTEGERCONSTANT:      "NUMBER",
+	EOF:             "EOF",
+	ILLEGAL:         "ILLEGAL",
+	IDENTIFIER:      "IDENTIFIER",
+	KEYWORD:         "KEYWORD",
+	SYMBOL:          "SYMBOL",
+	STRINGCONST:     "STRINGCONST",
+	INTEGERCONSTANT: "NUMBER",
 }
 
 var tokenKeyword = []string{
@@ -166,7 +170,7 @@ func (l *Lexer) tokenize() *Token {
 		r, _, err := l.reader.ReadRune()
 		if err != nil {
 			if err == io.EOF {
-				return NewToken(EOF, "",l.pos.line,l.pos.column)
+				return NewToken(EOF, "", l.pos.line, l.pos.column)
 				//return l.pos, EOF, ""
 			}
 
@@ -181,50 +185,48 @@ func (l *Lexer) tokenize() *Token {
 
 		case '\n':
 			l.resetPosition()
-
 		case '+':
-			return NewToken(OP, "+",l.pos.line,l.pos.column)
-			//return l.pos, SYMBOL, "+"
+			return NewToken(OP, "+", l.pos.line, l.pos.column)
 		case '-':
-			return NewToken(OP, "-",l.pos.line,l.pos.column)
+			return NewToken(OP, "-", l.pos.line, l.pos.column)
 		case '*':
-			return NewToken(OP, "*",l.pos.line,l.pos.column)
+			return NewToken(OP, "*", l.pos.line, l.pos.column)
 		case '/':
-			return NewToken(OP, "/",l.pos.line,l.pos.column)
+			return NewToken(OP, "/", l.pos.line, l.pos.column)
 		case '=':
-			return NewToken(OP, "=",l.pos.line,l.pos.column)
+			return NewToken(OP, "=", l.pos.line, l.pos.column)
 		case '{':
-			return NewToken(SYMBOL, "{",l.pos.line,l.pos.column)
+			return NewToken(SYMBOL, "{", l.pos.line, l.pos.column)
 		case '}':
-			return NewToken(SYMBOL, "}",l.pos.line,l.pos.column)
+			return NewToken(SYMBOL, "}", l.pos.line, l.pos.column)
 		case '(':
-			return NewToken(SYMBOL, "(",l.pos.line,l.pos.column)
+			return NewToken(SYMBOL, "(", l.pos.line, l.pos.column)
 		case ')':
-			return NewToken(SYMBOL, ")",l.pos.line,l.pos.column)
+			return NewToken(SYMBOL, ")", l.pos.line, l.pos.column)
 		case '[':
-			return NewToken(SYMBOL, "[",l.pos.line,l.pos.column)
+			return NewToken(SYMBOL, "[", l.pos.line, l.pos.column)
 		case ']':
-			return NewToken(SYMBOL, "]",l.pos.line,l.pos.column)
+			return NewToken(SYMBOL, "]", l.pos.line, l.pos.column)
 		case '.':
-			return NewToken(SYMBOL, ".",l.pos.line,l.pos.column)
+			return NewToken(SYMBOL, ".", l.pos.line, l.pos.column)
 		case ',':
-			return NewToken(SYMBOL, ",",l.pos.line,l.pos.column)
+			return NewToken(SYMBOL, ",", l.pos.line, l.pos.column)
 		case ';':
-			return NewToken(SYMBOL, ";",l.pos.line,l.pos.column)
+			return NewToken(SYMBOL, ";", l.pos.line, l.pos.column)
 		case '&':
-			return NewToken(OP, "&",l.pos.line,l.pos.column)
+			return NewToken(OP, "&", l.pos.line, l.pos.column)
 		case '|':
-			return NewToken(OP, "|",l.pos.line,l.pos.column)
+			return NewToken(OP, "|", l.pos.line, l.pos.column)
 		case '<':
-			return NewToken(OP, "<",l.pos.line,l.pos.column)
+			return NewToken(OP, "<", l.pos.line, l.pos.column)
 		case '>':
-			return NewToken(OP, ">",l.pos.line,l.pos.column)
+			return NewToken(OP, ">", l.pos.line, l.pos.column)
 		case '~':
-			return NewToken(UNARYOP, "~",l.pos.line,l.pos.column)
+			return NewToken(UNARYOP, "~", l.pos.line, l.pos.column)
 		case '!':
-			return NewToken(UNARYOP, "~",l.pos.line,l.pos.column)
+			return NewToken(UNARYOP, "~", l.pos.line, l.pos.column)
 		case '"':
-			return NewToken(STRINGCONST, l.lexStringConst(),l.pos.line,l.pos.column)
+			return NewToken(STRINGCONST, l.lexStringConst(), l.pos.line, l.pos.column)
 		default:
 			if unicode.IsSpace(r) {
 				continue // nothing to do here, just move on
@@ -233,7 +235,7 @@ func (l *Lexer) tokenize() *Token {
 				//startPos := l.pos
 				l.backup()
 				lit := l.lexInt()
-				return NewToken(INTEGERCONSTANT, lit,l.pos.line,l.pos.column)
+				return NewToken(INTEGERCONSTANT, lit, l.pos.line, l.pos.column)
 			} else if unicode.IsLetter(r) {
 				// backup and let lexIdent rescan the beginning of the ident
 				//startPos := l.pos
@@ -242,13 +244,13 @@ func (l *Lexer) tokenize() *Token {
 
 				for _, i := range tokenKeyword {
 					if i == lit {
-						return NewToken(KEYWORD, lit,l.pos.line,l.pos.column)
+						return NewToken(KEYWORD, lit, l.pos.line, l.pos.column)
 					}
 				}
 
-				return NewToken(IDENTIFIER, lit,l.pos.line,l.pos.column)
+				return NewToken(IDENTIFIER, lit, l.pos.line, l.pos.column)
 			} else {
-				return NewToken(ILLEGAL, string(r),l.pos.line,l.pos.column)
+				return NewToken(ILLEGAL, string(r), l.pos.line, l.pos.column)
 			}
 		}
 	}
@@ -263,7 +265,6 @@ func (l *Lexer) backup() {
 	if err := l.reader.UnreadRune(); err != nil {
 		panic(err)
 	}
-
 	l.pos.column--
 }
 
@@ -335,6 +336,24 @@ func (l *Lexer) lexInt() string {
 			// scanned something not in the integer
 			l.backup()
 			return lit
+		}
+	}
+}
+
+
+func (l *Lexer) removeComent(){
+	for {
+
+		r, _, err := l.reader.ReadRune()
+		if err != nil {
+			if err == io.EOF {
+					panic("")
+			}
+		}
+		if r=='\n'{
+			l.pos.column=0
+			l.pos.line++
+			return
 		}
 	}
 }

@@ -140,7 +140,7 @@ func (a *Analyzer) identifyToken(i int) {
 			break
 
 		case TERMCOND:
-			a.termCond(i) //este es el de (<op><term>)*
+			a.termCond(i) //este es el de <term>(<op><term>)*
 			break
 
 		case EXPRESSIONCOND:
