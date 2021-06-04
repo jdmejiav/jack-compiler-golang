@@ -42,6 +42,8 @@ Para ejecutar el programa, es necesario compilarlo, para esto, dirígase a la ca
     $ cd src
     $ go build main.go token.go  pila.go  parser.go  linkedList.go
 
-Una vez compilado, pase como parámetro uno o más archivos .jack que desee compilar (En el directorio jackTest/ hay varios ejemplos de archivos .jack). Ej:
+Una vez compilado, pase como parámetro un que desee compilar (En el directorio jackTest/ hay varios ejemplos de archivos .jack). Ej:
 
-    $ ./main.exe ../jackText/Main.jack ../jackText/Bola.jack ../jackTest/Barra.jack   
+    $ ./main.exe ../jackText/Main.jack  
+    $ ./main.exe ../jackTest/Barra.jack
+    $ ./main.exe ../jackText/Bola.jack
