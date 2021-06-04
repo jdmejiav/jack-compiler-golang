@@ -817,16 +817,16 @@ func (a *Analyzer) subRoutineCall(i int) {
 		for _,j := range a.listaPrecedencia[currentScope].data{
 			if j[0]==a.tokens[i].token{
 				tempSub = j[1]
-				fmt.Println(tempSub)
+				//fmt.Println(tempSub)
 			}
 		}
 		if tempSub==""{
 			if a.listaPrecedencia[currentScope].next != nil{
-				fmt.Println("Entra a la precedencia")
+				//fmt.Println("Entra a la precedencia")
 				for _,j := range a.listaPrecedencia[currentScope].next.data{
 					if j[0]==a.tokens[i].token{
 						tempSub = j[1]
-						fmt.Println(tempSub)
+						//fmt.Println(tempSub)
 					}
 				}
 			}else{
@@ -841,11 +841,11 @@ func (a *Analyzer) subRoutineCall(i int) {
 			NewTokenAnalysis(false,EXPRESSIONLIST,""),
 			NewTokenAnalysis(true,RPARENT,")"),
 		}
-		fmt.Println("se hace la vuelta")
-		fmt.Println(className)
+		//fmt.Println("se hace la vuelta")
+		//fmt.Println(className)
 
 		subroutineTemp = className +"."+ a.tokens[i].token
-		fmt.Println(subroutineTemp)
+		//fmt.Println(subroutineTemp)
 	}
 	a.stack.pushAtPos(tokensPos, arr)
 	a.identifyToken(i)

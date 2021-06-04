@@ -52,10 +52,6 @@ func main() {
 
 		b := []byte(analyzer.getText())
 		ioutil.WriteFile(i[:len(i)-4]+"vm", b, 0644)
-
-
-
-
-
+		
 	}
 }
