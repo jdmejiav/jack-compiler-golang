@@ -44,4 +44,4 @@ Para ejecutar el programa, es necesario compilarlo, para esto, dirígase a la ca
 
 Una vez compilado, pase como parámetro uno o más archivos .jack que desee compilar (En el directorio jackTest/ hay varios ejemplos de archivos .jack). Ej:
 
-    $ ./main.exe ../Main.jack ../Bola.jack ../Barra.jack   
+    $ ./main.exe ../jackText/Main.jack ../jackText/Bola.jack ../jackTest/Barra.jack   
