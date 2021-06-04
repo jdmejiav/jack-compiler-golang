@@ -29,7 +29,7 @@ Compilador de jack a VM Programado en Golang
     var int d;
 
 
- - **Code generator:*** 50% (actualmente solo compila, defición de funciones, definición de atributos de clase y do statements)
+ - **Code generator:** 50% (actualmente solo compila, defición de funciones, definición de atributos de clase y do statements)
 
 
 # Modo de Uso:
