@@ -115,6 +115,11 @@ const (
 	TERMPROD           //60
 	EXPRESSIONLISTCOND //61
 	SUBROUTINEDECCOND  //62
+	INIEXP						 //63
+	FINEXP						 //64
+	CURRENTSCOPE			 //65
+	BACKUPSCOPE				 //66
+	COMPILEFUNCTION		 //67
 )
 
 var tokens = []string{

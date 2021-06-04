@@ -41,6 +41,21 @@ func main() {
 
 		analyzer := NewAnalyzer(tokens)
 		analyzer.Analyze()
+
 		fmt.Printf("\n\n%s Grammar OK\n\n", i)
+		fmt.Println(i[:len(i)-4]+"vm")
+
+
+		var _, errorVm = os.Stat(i[:len(i)-4]+"vm")
+		//Crea el archivo si no existe
+		if os.IsNotExist(errorVm) {
+			var file, errorVm = os.Create(i[:len(i)-4]+"vm")
+
+			if errorVm!=nil {
+				return
+			}
+			defer file.Close()
+		}
+
 	}
 }
