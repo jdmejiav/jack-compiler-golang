@@ -5,9 +5,9 @@ Compilador de jack a VM Programado en Golang
 # status del proyecto:
  - **Tokenizado:** 100% No acepta comentarios de la forma:
  
- /\*\
+ /\*
  
- <Comentario\>\
+ \<Comentario\>
 
  */ 
  
@@ -17,18 +17,15 @@ Compilador de jack a VM Programado en Golang
  
  - **Parser:** 100% No acepta definiciones de más de una variable en una sola línea ej:
  
- **Incorrecto: **
+ **Incorrecto:**
 
     var int a,b,c,d;
 
-**Correcto: **
+**Correcto:**
 
     var int a;
-
     var int b;
-
     var int c;
-
     var int d;
 
 
@@ -40,3 +37,11 @@ Compilador de jack a VM Programado en Golang
 Es necesario instalar golang, para hacerlo se puede hacer desde la página oficial
 [Instalador Golang](https://golang.org/)
 
+Para ejecutar el programa, es necesario compilarlo, para esto, dirígase a la carpeta src dentro del proyecto y compile el código de la siguiete manera:
+    
+    $ cd src
+    $ go build main.go token.go  pila.go  parser.go  linkedList.go
+
+Una vez compilado, pase como parámetro uno o más archivos .jack que desee compilar (En el directorio jackTest/ hay varios ejemplos de archivos .jack). Ej:
+
+    $ ./main.exe ../Main.jack ../Bola.jack ../Barra.jack   
