@@ -120,6 +120,7 @@ const (
 	CURRENTSCOPE			 //65
 	BACKUPSCOPE				 //66
 	COMPILEFUNCTION		 //67
+	COMPILESUBROUTINECALL //68
 )
 
 var tokens = []string{

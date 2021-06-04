@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 )
 
@@ -46,16 +47,15 @@ func main() {
 		fmt.Println(i[:len(i)-4]+"vm")
 
 
-		var _, errorVm = os.Stat(i[:len(i)-4]+"vm")
-		//Crea el archivo si no existe
-		if os.IsNotExist(errorVm) {
-			var file, errorVm = os.Create(i[:len(i)-4]+"vm")
+		f, _ := os.Create(i[:len(i)-4]+"vm")
+    defer f.Close()
 
-			if errorVm!=nil {
-				return
-			}
-			defer file.Close()
-		}
+		b := []byte(analyzer.getText())
+		ioutil.WriteFile(i[:len(i)-4]+"vm", b, 0644)
+
+
+
+
 
 	}
 }

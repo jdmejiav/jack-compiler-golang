@@ -18,7 +18,7 @@ var countLocal int
 var countArgument int
 
 var tokensPos int
-
+var subroutineTemp string
 
 
 type TokenAnalysis struct {
@@ -215,9 +215,22 @@ func (a *Analyzer) identifyToken(i int) {
 
 		case CONSTRUCTOR:
 			a.text+="push constant "+strconv.Itoa(countField)+"\n"
-			a.text+="call Memory.alloc 1"+"\n"
-			a.text+="pop pointer 0"+"\n"
+			a.text+="call Memory.alloc 1\n"
+			a.text+="pop pointer 0\n"
 			a.stack.deletePos(tokensPos)
+			a.identifyToken(i)
+			break
+		case METHOD:
+			a.text+="push argument 0\n"
+			a.text+="pop pointer 0\n"
+			a.stack.deletePos(tokensPos)
+			a.identifyToken(i)
+			break
+
+		case COMPILESUBROUTINECALL:
+			a.text+="call "+subroutineTemp+" "+strconv.Itoa(countArgument)+"\n"
+			a.stack.deletePos(tokensPos)
+			subroutineTemp=""
 			a.identifyToken(i)
 			break
 		}
@@ -389,7 +402,7 @@ func (a *Analyzer) subRoutineDec(i int) {
 				NewTokenAnalysis(false, BACKUPSCOPE, currentScope),
 				NewTokenAnalysis(false, SUBROUTINEDECCOND, ""),
 			}...)
-		}else{
+		}else if "method" == a.tokens[i].token{
 			arr = append(arr, []TokenAnalysis{
 				NewTokenAnalysis(false, TYPE, ""),
 				NewTokenAnalysis(false, SUBROUTINENAME, ""),
@@ -398,6 +411,7 @@ func (a *Analyzer) subRoutineDec(i int) {
 				NewTokenAnalysis(false, PARAMETERLIST, ""),
 				NewTokenAnalysis(true, RPARENT, ")"),
 				NewTokenAnalysis(false, SUBROUTINEBODY, ""),
+				NewTokenAnalysis(false, METHOD, ""),
 				NewTokenAnalysis(false, BACKUPSCOPE, currentScope),
 				NewTokenAnalysis(false, SUBROUTINEDECCOND, ""),
 			}...)
@@ -639,6 +653,7 @@ func (a *Analyzer) doStatement(i int) {
 		arr := []TokenAnalysis{
 			NewTokenAnalysis(true, KEYWORD, "do"),
 			NewTokenAnalysis(false, SUBROUTINECALL, ""),
+			NewTokenAnalysis(false, COMPILESUBROUTINECALL, ""),
 			NewTokenAnalysis(true, DOTANDCOMA, ";"),
 		}
 		a.stack.pushAtPos(tokensPos, arr)
@@ -797,6 +812,28 @@ func (a *Analyzer) subRoutineCall(i int) {
 			NewTokenAnalysis(false,EXPRESSIONLIST,""),
 			NewTokenAnalysis(true,RPARENT,")"),
 		}
+		tempSub:=""
+
+		for _,j := range a.listaPrecedencia[currentScope].data{
+			if j[0]==a.tokens[i].token{
+				tempSub = j[1]
+				fmt.Println(tempSub)
+			}
+		}
+		if tempSub==""{
+			if a.listaPrecedencia[currentScope].next != nil{
+				fmt.Println("Entra a la precedencia")
+				for _,j := range a.listaPrecedencia[currentScope].next.data{
+					if j[0]==a.tokens[i].token{
+						tempSub = j[1]
+						fmt.Println(tempSub)
+					}
+				}
+			}else{
+				tempSub=a.tokens[i].token
+			}
+		}
+		subroutineTemp = tempSub + "." + a.tokens[i+2].token
 	} else {
 		arr = []TokenAnalysis{
 			NewTokenAnalysis(false,SUBROUTINENAME,""),
@@ -804,6 +841,11 @@ func (a *Analyzer) subRoutineCall(i int) {
 			NewTokenAnalysis(false,EXPRESSIONLIST,""),
 			NewTokenAnalysis(true,RPARENT,")"),
 		}
+		fmt.Println("se hace la vuelta")
+		fmt.Println(className)
+
+		subroutineTemp = className +"."+ a.tokens[i].token
+		fmt.Println(subroutineTemp)
 	}
 	a.stack.pushAtPos(tokensPos, arr)
 	a.identifyToken(i)
