@@ -1,6 +1,6 @@
 # jack-compiler-golang
 
-Compilador de jack a VM Programado en Golang
+Compilador de jack a VM Programado en Golang, hecho a mano sin usar code generators.
 
 # status del proyecto:
  - **Tokenizado:** 100% No acepta comentarios de la forma:
