@@ -1,9 +1,14 @@
 # jack-compiler-golang
 
-Compilador de jack a VM Programado en Golang, hecho a mano sin usar code generators.
+Compilador de jack a VM Programado en Golang, sin usar code generators.
 
-# status del proyecto:
- - **Tokenizado:** 100% No acepta comentarios de la forma:
+Jack language compiler from jack to VM. Without code generators
+
+
+# status del proyecto // Project Status:
+ - **Tokenyze:** 100%:
+ 
+ The analyzer don't recognize coment in the  \/\* \*\/ way. example:
  
  /\*
  
